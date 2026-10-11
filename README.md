@@ -16,8 +16,6 @@
 
 ## 💡 Cara Cepat Memanggil (AI Trigger Shortcut)
 
-Anda **TIDAK PERLU** lagi mengetik instruksi panjang seperti *"kerjakan ini dengan menggunakan 6 sub agent"*. 
-
 Cukup gunakan token pemicu **`orca`** atau **`ORCA`** di awal prompt Anda pada chat Antigravity / AI:
 
 ```text
