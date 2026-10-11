@@ -100,9 +100,27 @@ class Orchestrator:
             self.task_engine.record_audit(audit)
             return audit
 
-        # 2. Run automated test command if provided
+        # 2. If task is Frontend, run UI/UX, A11y, and Anti-Slop audit
+        if task.assigned_role == AgentRole.FRONTEND:
+            from agents.qa_agent import QAAgent
+            qa_inspector = QAAgent(self)
+            ui_passed, ui_findings = qa_inspector.audit_frontend_ui_ux(task.worktree_path)
+            if not ui_passed:
+                audit = AuditResult(
+                    task_id=task_id,
+                    reviewer_role=AgentRole.QA,
+                    verdict="FAIL",
+                    exit_code=1,
+                    test_output=f"UI/UX & Anti-Slop Audit Failed: {len(ui_findings)} design/accessibility issues detected.",
+                    findings=ui_findings,
+                    coaching_guidance="Fix UI/UX defects: replace generic CTA/buzzwords, ensure WCAG alt attributes, and remove clichéd gradients.",
+                )
+                self.task_engine.record_audit(audit)
+                return audit
+
+        # 3. Run automated test command if provided
         exit_code = 0
-        output = "No external tests specified; boundaries verified."
+        output = "No external tests specified; boundaries and UI/UX verified."
         if test_cmd:
             res = subprocess.run(
                 test_cmd,
