@@ -27,7 +27,9 @@ class Orchestrator:
             str(self.project_root / ".specify" / "memory" / "task_ledger.db")
         )
         self.worktree_manager = WorktreeManager(str(self.project_root))
-        self.sb_bridge = SecondBrainBridge(second_brain_path)
+        self.sb_bridge = SecondBrainBridge(
+            second_brain_path, workspace_root=self.project_root, auto_bootstrap=True
+        )
         self.contracts_dir = self.project_root / "contracts"
         self.contracts_dir.mkdir(parents=True, exist_ok=True)
 

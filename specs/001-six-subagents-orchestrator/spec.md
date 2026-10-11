@@ -3,8 +3,8 @@
 **Feature Branch**: `001-six-subagents-orchestrator`  
 **Created**: 2026-10-11  
 **Status**: Ready for Plan / Review  
-**Project Path**: `/home/rerei/Documents/Projects/sub-agent orchestrator/`  
-**Central Brain Path**: `/home/rerei/Documents/SecondBrain/`  
+**Project Path**: `~/Documents/Projects/sub-agent orchestrator/`  
+**Central Brain Path**: `~/Documents/SecondBrain/`  
 
 ---
 
@@ -12,11 +12,11 @@
 
 Sistem ini adalah kerangka kerja orkestrasi multi-agen otonom pada lingkungan Google Antigravity yang terdiri dari **6 sub-agen terspesialisasi**. Sistem dirancang untuk mengeksekusi proyek rekayasa perangkat lunak skala penuh dari nol hingga siap produksi tanpa terjadinya tumpang tindih pekerjaan (*race conditions*), penumpukan kode (*merge collisions*), atau perebutan tugas.
 
-Seluruh sub-agen beroperasi dengan menjadikan **Second Brain (`/home/rerei/Documents/SecondBrain/`) sebagai Otak Utama (Shared Central Brain)**: membaca seluruh pedoman koding, katalog 218 skill, riwayat troubleshooting proyek, dan profil sistem sebelum bertindak, serta memperbarui memori jangka panjang ketika menemukan wawasan baru atau menyelesaikan kendala.
+Seluruh sub-agen beroperasi dengan menjadikan **Second Brain (`~/Documents/SecondBrain/`) sebagai Otak Utama (Shared Central Brain)**: membaca seluruh pedoman koding, katalog 218 skill, riwayat troubleshooting proyek, dan profil sistem sebelum bertindak, serta memperbarui memori jangka panjang ketika menemukan wawasan baru atau menyelesaikan kendala.
 
 ```mermaid
 graph TD
-    User["👤 User (rerei)"] -->|Request / Ide Proyek| MGR["1. 👔 Manager / Orchestrator<br/>(Task Breakdown & Governance)"]
+    User["👤 User"] -->|Request / Ide Proyek| MGR["1. 👔 Manager / Orchestrator<br/>(Task Breakdown & Governance)"]
 
     subgraph SB["🧠 SECOND BRAIN (Otak Utama & Persistent Memory)"]
         Rules["02_RULES_GUIDELINES<br/>(Ponytail, Anti-Slop, Superpowers)"]
@@ -105,7 +105,7 @@ Untuk menjamin tidak terjadi penumpukan kode (*code overwrite*) atau perebutan p
 
 ## 🧠 4. Protokol Integrasi Second Brain Sebagai Otak Utama
 
-Setiap sub-agent dihubungkan secara native dengan repositori Second Brain di `/home/rerei/Documents/SecondBrain/`:
+Setiap sub-agent dihubungkan secara native dengan repositori Second Brain di `~/Documents/SecondBrain/`:
 
 ### 4.1. Pre-Flight Knowledge Ingestion (Wajib Baca Sebelum Eksekusi)
 1. **Trigger `(sb)` Enforced**: Setiap sub-agent saat diluncurkan wajib menyinkronkan konteksnya dengan membaca:
@@ -219,8 +219,8 @@ Sebagai pengguna, saya ingin ketika sub-agent melakukan kesalahan (error build, 
 - **FR-019**: Trainer HARUS memperbarui aturan atau panduan di Second Brain jika ditemukan pola kegagalan berulang.
 
 ### 6.6. Integrasi Second Brain & Lingkungan Lokal
-- **FR-020**: Seluruh sub-agent HARUS memiliki akses baca ke `/home/rerei/Documents/SecondBrain/`.
-- **FR-021**: Seluruh kode sumber proyek HARUS disimpan di `/home/rerei/Documents/Projects/<nama-proyek>/`.
+- **FR-020**: Seluruh sub-agent HARUS memiliki akses baca ke `~/Documents/SecondBrain/`.
+- **FR-021**: Seluruh kode sumber proyek HARUS disimpan di `~/Documents/Projects/<nama-proyek>/`.
 - **FR-022**: Second Brain DILARANG menyimpan implementasi kode sumber proyek (hanya catatan, spec, changelog, dan KB).
 - **FR-023**: Seluruh dokumen Markdown yang dihasilkan sub-agent HARUS mematuhi batas ukuran $\le 45$ KB.
 
@@ -254,7 +254,7 @@ Sebagai pengguna, saya ingin ketika sub-agent melakukan kesalahan (error build, 
 ## 🛠️ 9. Asumsi & Ketergantungan Sistem
 
 1. **Lingkungan OS**: Linux Mint 22.3 / Ubuntu 24.04 LTS x86_64 dengan Node.js, Python, Git, dan Antigravity Agent Tooling.
-2. **Path Second Brain**: Terletak permanen di `/home/rerei/Documents/SecondBrain/`.
+2. **Path Second Brain**: Terletak di `~/Documents/SecondBrain/` (atau dikonfigurasi via `SECOND_BRAIN_PATH`).
 3. **Mekanisme Subagent**: Dieksekusi melalui Google Antigravity Subagent Engine (`invoke_subagent`, `define_subagent`, `send_message`).
 4. **Isolasi Git**: Memanfaatkan fitur native Git Worktree dan Branch isolation pada folder repositori proyek.
 

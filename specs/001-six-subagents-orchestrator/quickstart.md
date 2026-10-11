@@ -9,7 +9,7 @@
 - Linux Mint 22.3 / Ubuntu 24.04 LTS (x86_64)
 - Python 3.12+ (Standard library: `sqlite3`, `subprocess`, `dataclasses`, `json`)
 - Git terpasang (`/usr/bin/git`)
-- Second Brain aktif di `/home/rerei/Documents/SecondBrain/`
+- Second Brain aktif di `~/Documents/SecondBrain/`
 
 ---
 
@@ -17,7 +17,7 @@
 
 ### Inisialisasi Proyek Baru
 ```bash
-python3 -m core.orchestrator init --name "my-awesome-project" --path "/home/rerei/Documents/Projects/my-awesome-project"
+python3 -m core.orchestrator init --name "my-awesome-project" --path "~/Documents/Projects/my-awesome-project"
 ```
 
 ### Menguraikan Tugas & Membekukan Kontrak (Manager)

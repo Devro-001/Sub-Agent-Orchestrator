@@ -21,7 +21,7 @@ class TestSecondBrainBridge(unittest.TestCase):
         (self.sb_path / "06_DATA_SEARCH").mkdir(parents=True)
 
         # Write sample files
-        (self.sb_path / "01_PROFILE" / "User_Profile.md").write_text("# User Profile\nUsername: rerei", encoding="utf-8")
+        (self.sb_path / "01_PROFILE" / "User_Profile.md").write_text("# User Profile\nUsername: test_user", encoding="utf-8")
         (self.sb_path / "02_RULES_GUIDELINES" / "Base_Agent_AI_Guidelines.md").write_text("# Base Guidelines\nPonytail & Anti-slop", encoding="utf-8")
         
         self.kb_file = (
@@ -39,7 +39,7 @@ class TestSecondBrainBridge(unittest.TestCase):
 
     def test_context_ingestion(self):
         profile = self.bridge.get_user_profile()
-        self.assertIn("Username: rerei", profile)
+        self.assertIn("Username: test_user", profile)
 
         guidelines = self.bridge.get_base_guidelines()
         self.assertIn("Ponytail & Anti-slop", guidelines)
@@ -81,6 +81,24 @@ class TestSecondBrainBridge(unittest.TestCase):
                 filename="02_oversized.md",
                 content=oversized_content,
             )
+
+    def test_standalone_mode_fallback(self):
+        """When Second Brain path is not found and not explicitly given, bridge enters standalone mode."""
+        import os
+        from unittest.mock import patch
+
+        # Temporarily mock non-existent path
+        with patch.dict(os.environ, {"SECOND_BRAIN_PATH": ""}, clear=False):
+            with patch.object(SecondBrainBridge, "DEFAULT_SECOND_BRAIN_PATH", "/non/existent/path/for/test"):
+                standalone_bridge = SecondBrainBridge(second_brain_path=None)
+                self.assertFalse(standalone_bridge.is_active)
+                self.assertEqual(standalone_bridge.get_user_profile(), "")
+                self.assertEqual(standalone_bridge.get_base_guidelines(), "")
+                self.assertEqual(standalone_bridge.get_troubleshooting_kb(), "")
+                
+                # sync returns False without crashing
+                case = TroubleshootingCase("T-1", "s", "rc", "res", "rule")
+                self.assertFalse(standalone_bridge.sync_troubleshooting_case(case))
 
 
 if __name__ == "__main__":

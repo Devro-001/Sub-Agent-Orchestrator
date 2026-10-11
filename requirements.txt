@@ -1,0 +1,2 @@
+# Sub-Agent Orchestrator Runtime Requirements
+# Minimal stdlib base: zero external dependencies required for core functionality.

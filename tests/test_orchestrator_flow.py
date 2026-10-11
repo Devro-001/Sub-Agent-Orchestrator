@@ -28,7 +28,7 @@ class TestOrchestratorFlow(unittest.TestCase):
         (self.sb_path / "05_PROJECTS" / "Project_Changelog_and_Troubleshooting_Log_Modules").mkdir(parents=True)
         (self.sb_path / "06_DATA_SEARCH").mkdir(parents=True)
 
-        (self.sb_path / "01_PROFILE" / "User_Profile.md").write_text("# User Profile\nUsername: rerei", encoding="utf-8")
+        (self.sb_path / "01_PROFILE" / "User_Profile.md").write_text("# User Profile\nUsername: test_user", encoding="utf-8")
         (self.sb_path / "02_RULES_GUIDELINES" / "Base_Agent_AI_Guidelines.md").write_text("# Rules", encoding="utf-8")
         self.kb_file = (
             self.sb_path
