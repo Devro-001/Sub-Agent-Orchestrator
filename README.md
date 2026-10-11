@@ -119,15 +119,5 @@ Setiap sub-agent bekerja pada ruang direktori terisolasi (*file boundaries*):
 
 ---
 
-## 🧪 Verifikasi Tes
-
-Jalankan test suite (27 unit & integration tests):
-```bash
-python3 -m unittest discover -s tests -v
-```
-*(Seluruh 27 tes dipastikan lulus 100% di Linux, macOS, dan Windows).*
-
----
-
 ## 📄 Lisensi
 [MIT License](LICENSE) © 2026 Sub-Agent Orchestrator Contributors.
