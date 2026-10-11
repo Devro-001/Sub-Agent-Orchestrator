@@ -47,8 +47,14 @@ class TestOrchestratorFlow(unittest.TestCase):
         self.trainer = TrainerAgent(self.orchestrator)
 
     def tearDown(self):
-        self.temp_dir.cleanup()
-        self.temp_sb.cleanup()
+        try:
+            self.temp_dir.cleanup()
+        except Exception:
+            pass
+        try:
+            self.temp_sb.cleanup()
+        except Exception:
+            pass
 
     def test_full_multiagent_lifecycle(self):
         # 1. Manager initializes project

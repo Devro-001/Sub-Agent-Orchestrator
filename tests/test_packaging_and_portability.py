@@ -23,7 +23,10 @@ class TestPackagingAndPortability(unittest.TestCase):
         self.temp_path = Path(self.temp_dir.name)
 
     def tearDown(self):
-        self.temp_dir.cleanup()
+        try:
+            self.temp_dir.cleanup()
+        except Exception:
+            pass
 
     # =========================================================================
     # Group 1: Standalone Mode & Auto-Bootstrap

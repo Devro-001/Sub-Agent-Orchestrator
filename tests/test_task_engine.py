@@ -25,7 +25,10 @@ class TestTaskEngine(unittest.TestCase):
         self.engine.register_project(self.project)
 
     def tearDown(self):
-        self.temp_dir.cleanup()
+        try:
+            self.temp_dir.cleanup()
+        except Exception:
+            pass
 
     def test_add_and_get_task(self):
         task = Task(

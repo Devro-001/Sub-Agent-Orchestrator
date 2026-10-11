@@ -35,7 +35,10 @@ class TestSecondBrainBridge(unittest.TestCase):
         self.bridge = SecondBrainBridge(str(self.sb_path))
 
     def tearDown(self):
-        self.temp_sb.cleanup()
+        try:
+            self.temp_sb.cleanup()
+        except Exception:
+            pass
 
     def test_context_ingestion(self):
         profile = self.bridge.get_user_profile()

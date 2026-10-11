@@ -31,8 +31,14 @@ class TestQAUIUXAudit(unittest.TestCase):
         self.qa = QAAgent(self.orchestrator)
 
     def tearDown(self):
-        self.temp_dir.cleanup()
-        self.temp_sb.cleanup()
+        try:
+            self.temp_dir.cleanup()
+        except Exception:
+            pass
+        try:
+            self.temp_sb.cleanup()
+        except Exception:
+            pass
 
     def test_qa_rejects_slop_ui(self):
         """QA should reject frontend code with generic CTAs, AI buzzwords, and missing alt attributes."""

@@ -17,17 +17,20 @@ class TestWorktreeManager(unittest.TestCase):
         self.manager = WorktreeManager(str(self.repo_path))
 
     def tearDown(self):
-        self.temp_dir.cleanup()
+        try:
+            self.temp_dir.cleanup()
+        except Exception:
+            pass
 
     def test_create_and_remove_worktree(self):
         branch, wt_path = self.manager.create_worktree(AgentRole.BACKEND, "task-99")
         self.assertTrue(Path(wt_path).exists())
         self.assertIn("task-99", branch)
 
-        # Check list worktrees
+        # Check list worktrees (normalize resolved paths for cross-platform case/short-name safety)
         worktrees = self.manager.list_worktrees()
-        paths = [w["path"] for w in worktrees]
-        self.assertIn(str(wt_path), paths)
+        paths = [Path(w["path"]).resolve() for w in worktrees]
+        self.assertIn(Path(wt_path).resolve(), paths)
 
         # Remove worktree
         self.manager.remove_worktree(wt_path, delete_branch=True, branch_name=branch)

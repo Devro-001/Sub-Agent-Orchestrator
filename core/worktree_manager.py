@@ -83,23 +83,35 @@ class WorktreeManager:
             subprocess.run(["git", "branch", "-D", branch_name], cwd=self.repo_root, capture_output=True)
 
     @staticmethod
-    def _safe_rmtree(path: Path) -> None:
-        """Windows-safe recursive directory removal handling readonly attributes."""
+    def _safe_rmtree(path: Path, max_retries: int = 5, delay: float = 0.15) -> None:
+        """Windows-safe recursive directory removal handling readonly attributes and transient file locks."""
         import os
         import shutil
         import stat
+        import sys
+        import time
 
-        def _handle_readonly(func, file_path, exc_info):
+        def _handle_readonly(func, file_path, *args):
             try:
                 os.chmod(file_path, stat.S_IWRITE)
                 func(file_path)
             except Exception:
                 pass
 
-        try:
-            shutil.rmtree(str(path), onerror=_handle_readonly)
-        except Exception:
-            pass
+        for _ in range(max_retries):
+            if not path.exists():
+                return
+            try:
+                if sys.version_info >= (3, 12):
+                    shutil.rmtree(str(path), onexc=_handle_readonly)
+                else:
+                    shutil.rmtree(str(path), onerror=_handle_readonly)
+            except Exception:
+                pass
+
+            if not path.exists():
+                return
+            time.sleep(delay)
 
     def list_worktrees(self) -> List[Dict[str, str]]:
         """List all active worktrees."""
@@ -107,13 +119,25 @@ class WorktreeManager:
         worktrees = []
         current: Dict[str, str] = {}
         for line in res.stdout.splitlines():
-            if line.startswith("worktree "):
-                raw_path = line.split(" ", 1)[1]
+            line_str = line.strip()
+            if not line_str:
+                if "path" in current:
+                    worktrees.append(current)
+                    current = {}
+                continue
+            if line_str.startswith("worktree "):
+                if "path" in current:
+                    worktrees.append(current)
+                    current = {}
+                raw_path = line_str.split(" ", 1)[1]
                 current = {"path": str(Path(raw_path).resolve())}
-            elif line.startswith("branch "):
-                current["branch"] = line.split(" ", 1)[1]
-                worktrees.append(current)
-                current = {}
+            elif line_str.startswith("branch "):
+                current["branch"] = line_str.split(" ", 1)[1]
+            elif line_str == "detached":
+                current["branch"] = "detached"
+
+        if "path" in current:
+            worktrees.append(current)
         return worktrees
 
     def validate_file_boundaries(self, worktree_path: str, allowed_patterns: List[str]) -> Tuple[bool, List[str]]:
@@ -130,8 +154,9 @@ class WorktreeManager:
         for line in res.stdout.splitlines():
             parts = line.strip().split(maxsplit=1)
             if len(parts) == 2:
-                # Normalize Windows backslashes to forward slashes for matching
-                changed_files.append(parts[1].replace("\\", "/"))
+                # Strip optional quotes and normalize Windows backslashes
+                clean_path = parts[1].strip('"').replace("\\", "/")
+                changed_files.append(clean_path)
 
         # Normalize allowed patterns to forward slashes
         norm_patterns = [pat.replace("\\", "/") for pat in allowed_patterns]
