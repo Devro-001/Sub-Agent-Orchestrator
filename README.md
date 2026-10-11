@@ -104,8 +104,8 @@ Each sub-agent operates within strict filesystem boundaries defined in [`contrac
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/<username>/sub-agent-orchestrator.git
-cd sub-agent-orchestrator
+git clone https://github.com/hans3-code/Sub-Agent-Orchestrator.git
+cd Sub-Agent-Orchestrator
 ```
 
 ### 2. Create and Activate Virtual Environment
