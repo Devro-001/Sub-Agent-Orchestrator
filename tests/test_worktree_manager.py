@@ -60,6 +60,23 @@ class TestWorktreeManager(unittest.TestCase):
         # Cleanup
         self.manager.remove_worktree(wt_path, delete_branch=True, branch_name=branch)
 
+    def test_windows_path_normalization_boundaries(self):
+        """Verifies that allowed patterns with Windows backslashes match correctly."""
+        branch, wt_path = self.manager.create_worktree(AgentRole.BACKEND, "task-win")
+        wt = Path(wt_path)
+
+        (wt / "backend").mkdir(parents=True, exist_ok=True)
+        (wt / "backend" / "api.py").write_text("# api", encoding="utf-8")
+
+        # Pass Windows-style backslash pattern
+        is_valid, violations = self.manager.validate_file_boundaries(
+            wt_path, ["backend\\**"]
+        )
+        self.assertTrue(is_valid)
+        self.assertEqual(violations, [])
+
+        self.manager.remove_worktree(wt_path, delete_branch=True, branch_name=branch)
+
 
 if __name__ == "__main__":
     unittest.main()

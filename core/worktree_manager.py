@@ -69,15 +69,37 @@ class WorktreeManager:
         return branch_name, str(worktree_path)
 
     def remove_worktree(self, worktree_path: str, delete_branch: bool = False, branch_name: Optional[str] = None) -> None:
-        """Removes a worktree and cleans up lock files."""
+        """Removes a worktree and cleans up lock files with Windows-safe fallback."""
         path = Path(worktree_path)
         if path.exists():
             subprocess.run(["git", "worktree", "remove", "--force", str(path)], cwd=self.repo_root, capture_output=True)
+            # If files or readonly attributes remain on Windows, forcefully prune
+            if path.exists():
+                self._safe_rmtree(path)
         
         subprocess.run(["git", "worktree", "prune"], cwd=self.repo_root, capture_output=True)
 
         if delete_branch and branch_name:
             subprocess.run(["git", "branch", "-D", branch_name], cwd=self.repo_root, capture_output=True)
+
+    @staticmethod
+    def _safe_rmtree(path: Path) -> None:
+        """Windows-safe recursive directory removal handling readonly attributes."""
+        import os
+        import shutil
+        import stat
+
+        def _handle_readonly(func, file_path, exc_info):
+            try:
+                os.chmod(file_path, stat.S_IWRITE)
+                func(file_path)
+            except Exception:
+                pass
+
+        try:
+            shutil.rmtree(str(path), onerror=_handle_readonly)
+        except Exception:
+            pass
 
     def list_worktrees(self) -> List[Dict[str, str]]:
         """List all active worktrees."""
@@ -86,7 +108,8 @@ class WorktreeManager:
         current: Dict[str, str] = {}
         for line in res.stdout.splitlines():
             if line.startswith("worktree "):
-                current = {"path": line.split(" ", 1)[1]}
+                raw_path = line.split(" ", 1)[1]
+                current = {"path": str(Path(raw_path).resolve())}
             elif line.startswith("branch "):
                 current["branch"] = line.split(" ", 1)[1]
                 worktrees.append(current)
@@ -107,11 +130,15 @@ class WorktreeManager:
         for line in res.stdout.splitlines():
             parts = line.strip().split(maxsplit=1)
             if len(parts) == 2:
-                changed_files.append(parts[1])
+                # Normalize Windows backslashes to forward slashes for matching
+                changed_files.append(parts[1].replace("\\", "/"))
+
+        # Normalize allowed patterns to forward slashes
+        norm_patterns = [pat.replace("\\", "/") for pat in allowed_patterns]
 
         violating = []
         for f in changed_files:
-            matched = any(fnmatch.fnmatch(f, pat) or fnmatch.fnmatch(f, pat.rstrip("*") + "*") for pat in allowed_patterns)
+            matched = any(fnmatch.fnmatch(f, pat) or fnmatch.fnmatch(f, pat.rstrip("*") + "*") for pat in norm_patterns)
             if not matched:
                 violating.append(f)
 
