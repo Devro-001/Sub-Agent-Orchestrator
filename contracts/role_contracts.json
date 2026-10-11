@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RoleBoundariesContract",
+  "description": "Strict file system boundaries and capabilities for each of the 6 sub-agents",
+  "roles": {
+    "orchestrator-manager": {
+      "writable_paths": [
+        "specs/**",
+        ".specify/**",
+        "plans/**",
+        "contracts/**",
+        "tasks.md"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "src/**"
+      ]
+    },
+    "backend-engineer": {
+      "writable_paths": [
+        "server/**",
+        "backend/**",
+        "api/**",
+        "database/**",
+        "lib/core/**",
+        "tests/backend/**"
+      ],
+      "read_only_paths": [
+        "contracts/**",
+        "specs/**"
+      ],
+      "forbidden_write_paths": [
+        "client/**",
+        "frontend/**",
+        "src/components/**",
+        "styles/**",
+        "contracts/**"
+      ]
+    },
+    "frontend-engineer": {
+      "writable_paths": [
+        "client/**",
+        "frontend/**",
+        "src/components/**",
+        "styles/**",
+        "public/**",
+        "tests/frontend/**"
+      ],
+      "read_only_paths": [
+        "contracts/**",
+        "specs/**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "backend/**",
+        "api/**",
+        "database/**",
+        "contracts/**"
+      ]
+    },
+    "qa-security-auditor": {
+      "writable_paths": [
+        "tests/**",
+        "e2e/**",
+        "security/**",
+        "audit-report.md"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "src/**"
+      ]
+    },
+    "data-researcher": {
+      "writable_paths": [
+        "research/**"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "tests/**",
+        "src/**"
+      ]
+    },
+    "trainer-continuous-learning": {
+      "writable_paths": [
+        "coaching/**"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "src/**",
+        "tests/**"
+      ]
+    }
+  }
+}

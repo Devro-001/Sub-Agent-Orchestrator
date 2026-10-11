@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RoleBoundariesContract",
+  "description": "Strict file system boundaries and capabilities for each of the 6 sub-agents",
+  "roles": {
+    "orchestrator-manager": {
+      "writable_paths": [
+        "specs/**",
+        ".specify/**",
+        "plans/**",
+        "contracts/**",
+        "tasks.md"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "src/**"
+      ],
+      "second_brain_access": {
+        "read": [
+          "01_PROFILE/User_Profile.md",
+          "02_RULES_GUIDELINES/Base_Agent_AI_Guidelines.md",
+          "02_RULES_GUIDELINES/AI_Assistant_and_Manager_Operating_Protocol.md"
+        ],
+        "write": [
+          "05_PROJECTS/Overview.md"
+        ]
+      }
+    },
+    "backend-engineer": {
+      "writable_paths": [
+        "server/**",
+        "backend/**",
+        "api/**",
+        "database/**",
+        "lib/core/**",
+        "tests/backend/**"
+      ],
+      "read_only_paths": [
+        "contracts/**",
+        "specs/**"
+      ],
+      "forbidden_write_paths": [
+        "client/**",
+        "frontend/**",
+        "src/components/**",
+        "styles/**",
+        "contracts/**"
+      ],
+      "second_brain_access": {
+        "read": [
+          "02_RULES_GUIDELINES/Ponytail_Efficiency.md",
+          "06_DATA_SEARCH/Data_Structures_10K_Professional_Architecture/**"
+        ],
+        "write": []
+      }
+    },
+    "frontend-engineer": {
+      "writable_paths": [
+        "client/**",
+        "frontend/**",
+        "src/components/**",
+        "styles/**",
+        "public/**",
+        "tests/frontend/**"
+      ],
+      "read_only_paths": [
+        "contracts/**",
+        "specs/**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "backend/**",
+        "api/**",
+        "database/**",
+        "contracts/**"
+      ],
+      "second_brain_access": {
+        "read": [
+          "02_RULES_GUIDELINES/Anti_Slop_Rules.md",
+          "02_RULES_GUIDELINES/Design_Execution_Protocol.md",
+          "06_DATA_SEARCH/Professional_Design_System_and_10K_Styles/**"
+        ],
+        "write": []
+      }
+    },
+    "qa-security-auditor": {
+      "writable_paths": [
+        "tests/**",
+        "e2e/**",
+        "security/**",
+        "audit-report.md"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "src/**"
+      ],
+      "second_brain_access": {
+        "read": [
+          "02_RULES_GUIDELINES/Superpowers_Core_Pedoman.md",
+          "04_SKILLS/Cybersecurity_and_Penetration_Testing.md",
+          "06_DATA_SEARCH/Cybersecurity_and_Offensive_Defensive_Architectures/**"
+        ],
+        "write": []
+      }
+    },
+    "data-researcher": {
+      "writable_paths": [
+        "research/**"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "tests/**",
+        "src/**"
+      ],
+      "second_brain_access": {
+        "read": [
+          "**"
+        ],
+        "write": [
+          "06_DATA_SEARCH/**"
+        ]
+      }
+    },
+    "trainer-continuous-learning": {
+      "writable_paths": [
+        "coaching/**"
+      ],
+      "read_only_paths": [
+        "**"
+      ],
+      "forbidden_write_paths": [
+        "server/**",
+        "client/**",
+        "src/**",
+        "tests/**"
+      ],
+      "second_brain_access": {
+        "read": [
+          "05_PROJECTS/Project_Changelog_and_Troubleshooting_Log.md",
+          "06_DATA_SEARCH/Autonomous_Self_Training_Agent_System/**"
+        ],
+        "write": [
+          "05_PROJECTS/Project_Changelog_and_Troubleshooting_Log.md"
+        ]
+      }
+    }
+  }
+}
