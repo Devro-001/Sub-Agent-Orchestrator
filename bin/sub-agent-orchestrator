@@ -47,6 +47,11 @@ def main():
     merge_parser = subparsers.add_parser("merge", help="Merge an approved task worktree to main")
     merge_parser.add_argument("task_id", help="Task ID")
 
+    # Run Auto (Autonomous Self-Healing Loop)
+    auto_parser = subparsers.add_parser("run-auto", help="Run autonomous execution with QA auto-remediation loop")
+    auto_parser.add_argument("task_id", help="Task ID")
+    auto_parser.add_argument("--retries", type=int, default=3, help="Max retry attempts before escalation")
+
     args = parser.parse_args()
     orchestrator = Orchestrator(str(PROJECT_ROOT))
 
@@ -84,6 +89,23 @@ def main():
     elif args.command == "merge":
         orchestrator.merge_to_main(args.task_id)
         print(f"🎉 Merged task {args.task_id} to main and pruned worktree.")
+
+    elif args.command == "run-auto":
+        print(f"🤖 Starting autonomous self-healing execution loop for {args.task_id} (Max retries: {args.retries})...")
+
+        def default_worker_noop(task_obj, worktree_path, coaching_guidance):
+            if coaching_guidance:
+                print(f"  🧑‍🏫 [Trainer Coaching Received]: {coaching_guidance.splitlines()[0]}")
+
+        success, msg = orchestrator.auto_execute_lifecycle(
+            task_id=args.task_id,
+            worker_fn=default_worker_noop,
+            max_retries=args.retries,
+        )
+        if success:
+            print(f"✅ {msg}")
+        else:
+            print(f"⚠️ {msg}")
 
 
 if __name__ == "__main__":

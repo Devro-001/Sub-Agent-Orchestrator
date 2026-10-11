@@ -138,6 +138,54 @@ class TestOrchestratorFlow(unittest.TestCase):
         self.assertIsNotNone(fe_claimed)
         self.assertEqual(fe_claimed.id, "T-FE-01")
 
+    def test_autonomous_auto_revision_loop(self):
+        """Tests that orchestrator automatically revises rejected code without human intervention."""
+        self.orchestrator.init_project("app-auto", "Auto App", "Testing Auto Loop")
+        
+        task = Task(
+            id="T-AUTO-01",
+            project_id="app-auto",
+            title="Auto Revision Task",
+            assigned_role=AgentRole.BACKEND,
+            file_boundaries=["backend/**"],
+        )
+        self.orchestrator.task_engine.add_task(task)
+
+        attempt_counter = [0]
+
+        def simulated_worker(task_obj, worktree_path, coaching_guidance):
+            attempt_counter[0] += 1
+            wt = Path(worktree_path)
+            if attempt_counter[0] == 1:
+                # First attempt: makes mistake (writes to frontend)
+                bad_dir = wt / "frontend"
+                bad_dir.mkdir(parents=True, exist_ok=True)
+                (bad_dir / "err.js").write_text("console.log('error')", encoding="utf-8")
+            else:
+                # Subsequent attempt: follows Trainer coaching, cleans up and writes proper file
+                bad_file = wt / "frontend" / "err.js"
+                if bad_file.exists():
+                    bad_file.unlink()
+                good_dir = wt / "backend"
+                good_dir.mkdir(parents=True, exist_ok=True)
+                (good_dir / "service.py").write_text("def run(): return True", encoding="utf-8")
+
+        # Run fully automated lifecycle
+        success, message = self.orchestrator.auto_execute_lifecycle(
+            task_id="T-AUTO-01",
+            worker_fn=simulated_worker,
+            max_retries=3,
+        )
+
+        self.assertTrue(success)
+        self.assertIn("PASSED QA and was MERGED", message)
+        self.assertEqual(attempt_counter[0], 2)  # Proved that it automatically revised on attempt 2!
+
+        # Verify Second Brain received the troubleshooting log
+        kb_text = self.kb_file.read_text(encoding="utf-8")
+        self.assertIn("T-AUTO-01", kb_text)
+        self.assertIn("QA Rejected on attempt 1", kb_text)
+
 
 if __name__ == "__main__":
     unittest.main()

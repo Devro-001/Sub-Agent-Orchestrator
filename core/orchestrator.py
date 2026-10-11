@@ -171,3 +171,47 @@ class Orchestrator:
             )
 
         self.task_engine.update_task_status(task_id, TaskStatus.MERGED)
+
+    def auto_execute_lifecycle(
+        self,
+        task_id: str,
+        worker_fn,
+        test_cmd: Optional[List[str]] = None,
+        max_retries: int = 3,
+    ) -> Tuple[bool, str]:
+        """Automatically executes task, runs QA gate, triggers Trainer on rejection,
+        re-dispatches revisions, and merges on approval without human intervention."""
+        task, wt_path = self.dispatch_task(task_id)
+        coaching = None
+
+        while task.retry_count < max_retries:
+            # 1. Worker executes code (with coaching guidance if this is a revision)
+            worker_fn(task, wt_path, coaching)
+
+            # 2. QA runs quality & security gate
+            audit = self.run_qa_gate(task_id, test_cmd)
+
+            if audit.verdict == "PASS":
+                # Commit any changes in worktree
+                subprocess.run(["git", "add", "."], cwd=wt_path, check=False)
+                subprocess.run(
+                    ["git", "commit", "-m", f"feat({task.assigned_role.value}): complete {task_id}"],
+                    cwd=wt_path,
+                    check=False,
+                )
+                self.merge_to_main(task_id)
+                return True, f"Task {task_id} PASSED QA and was MERGED to main."
+
+            # 3. QA Rejected -> Automatic Trainer intervention!
+            task = self.task_engine.get_task(task_id)  # refreshed retry_count
+            findings_str = "; ".join(audit.findings) or "Test assertions failed."
+            self.handle_trainer_remediation(
+                task_id=task_id,
+                symptom=f"QA Rejected on attempt {task.retry_count}: {findings_str}",
+                root_cause=f"Failure in execution: {audit.test_output[:200]}",
+                resolution="Automatic coaching dispatched to worker for instant revision.",
+                preventive_rule="Check and fix failing assertions and boundaries before submission.",
+            )
+            coaching = f"Trainer Coaching (Attempt {task.retry_count}/{max_retries}): Fix issues: {findings_str}\nDetail: {audit.test_output[:300]}"
+
+        return False, f"Task {task_id} FAILED after {max_retries} attempts. Escalating to architecture review (Aturan 3 Kali Gagal)."
