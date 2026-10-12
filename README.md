@@ -6,9 +6,9 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/Trigger-ORCA%20%7C%20orca-cyan" alt="Trigger ORCA">
+  <img src="https://img.shields.io/badge/Trigger-%2Forca%20%7C%20orca-cyan" alt="Trigger /orca">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
-  <img src="https://img.shields.io/badge/Tests-27%20Passed-success" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-33%20Passed-success" alt="Tests">
   <img src="https://img.shields.io/badge/Integration-Antigravity%20%7C%20Obsidian-purple" alt="Antigravity & Obsidian">
 </p>
 
@@ -16,19 +16,20 @@
 
 ## 💡 Cara Cepat Memanggil (AI Trigger Shortcut)
 
-Cukup gunakan token pemicu **`orca`** atau **`ORCA`** di awal prompt Anda pada chat Antigravity / AI:
+Cukup gunakan slash command **`/orca`** (atau fallback `orca`/`ORCA`) di awal prompt Anda pada chat Antigravity / AI:
 
 ```text
-orca buatkan modul autentikasi JWT dan UI login responsif
+/orca buatkan modul autentikasi JWT dan UI login responsif
 ```
 ```text
-ORCA: refactor endpoint database dan audit keamanan API
+/orca refactor endpoint database dan audit keamanan API
 ```
 
 > **Sistem secara otomatis**:
-> 1. Membaca awalan `orca` sebagai sinyal aktivasi 6 sub-agent spesialis.
-> 2. Membagi task, membekukan kontrak skema (*Contract Freeze*), dan membuka worktree terisolasi.
-> 3. Menjalankan audit QA gerbang mutlak sebelum menggabungkan kode ke branch utama.
+> 1. Membaca awalan `/orca` sebagai batas perintah tegas (*command boundary*) aktivasi 6 sub-agent spesialis.
+> 2. Menjalankan auto-inisialisasi database SQLite `.specify/memory/task_ledger.db` secara zero-touch jika proyek baru.
+> 3. Membagi task, membekukan kontrak skema (*Contract Freeze*), dan membuka worktree terisolasi.
+> 4. Menjalankan audit QA gerbang mutlak sebelum menggabungkan kode ke branch utama.
 
 ---
 
