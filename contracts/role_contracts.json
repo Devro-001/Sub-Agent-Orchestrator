@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "RoleBoundariesContract",
-  "description": "Strict file system boundaries and capabilities for each of the 6 sub-agents",
+  "description": "Strict file system boundaries, Antigravity model routing, and specialized skill clusters for each of the 6 sub-agents",
   "roles": {
     "orchestrator-manager": {
       "writable_paths": [
@@ -18,7 +18,35 @@
         "server/**",
         "client/**",
         "src/**"
-      ]
+      ],
+      "antigravity": {
+        "model": "gemini-2.5-pro",
+        "role_title": "Lead Software Architect & Orchestrator",
+        "enabled_tools": [
+          "view_file",
+          "create_file",
+          "edit_file",
+          "start_subagent",
+          "list_dir"
+        ],
+        "compaction_threshold": 65000,
+        "specialized_skills": [
+          "codebase-design",
+          "spec-kit",
+          "constraint-driven-development",
+          "dispatching-parallel-agents",
+          "writing-plans",
+          "domain-modeling",
+          "subagent-driven-development"
+        ],
+        "budget": {
+          "max_model_calls": 15,
+          "max_tool_calls": 40,
+          "max_input_tokens": 200000,
+          "max_output_tokens": 40000,
+          "max_total_tokens": 240000
+        }
+      }
     },
     "backend-engineer": {
       "writable_paths": [
@@ -39,7 +67,35 @@
         "src/components/**",
         "styles/**",
         "contracts/**"
-      ]
+      ],
+      "antigravity": {
+        "model": "gemini-3.8-flash",
+        "role_title": "Backend Systems & Database Engineer",
+        "enabled_tools": [
+          "view_file",
+          "create_file",
+          "edit_file",
+          "run_command",
+          "search_dir",
+          "list_dir"
+        ],
+        "compaction_threshold": 35000,
+        "specialized_skills": [
+          "python-design-patterns",
+          "python-type-safety",
+          "python-testing-patterns",
+          "python-error-handling",
+          "python-performance-optimization",
+          "test-driven-development"
+        ],
+        "budget": {
+          "max_model_calls": 12,
+          "max_tool_calls": 30,
+          "max_input_tokens": 150000,
+          "max_output_tokens": 30000,
+          "max_total_tokens": 180000
+        }
+      }
     },
     "frontend-engineer": {
       "writable_paths": [
@@ -60,7 +116,37 @@
         "api/**",
         "database/**",
         "contracts/**"
-      ]
+      ],
+      "antigravity": {
+        "model": "gemini-3.8-flash",
+        "role_title": "Frontend UI/UX & Interaction Engineer",
+        "enabled_tools": [
+          "view_file",
+          "create_file",
+          "edit_file",
+          "run_command",
+          "search_dir",
+          "list_dir"
+        ],
+        "compaction_threshold": 35000,
+        "specialized_skills": [
+          "frontend-design",
+          "frontend-design-taste",
+          "taste-and-craft",
+          "impeccable",
+          "ui-styling",
+          "ui-ux-pro-max",
+          "framer-motion",
+          "web-design-guidelines"
+        ],
+        "budget": {
+          "max_model_calls": 12,
+          "max_tool_calls": 30,
+          "max_input_tokens": 150000,
+          "max_output_tokens": 30000,
+          "max_total_tokens": 180000
+        }
+      }
     },
     "qa-security-auditor": {
       "writable_paths": [
@@ -76,7 +162,36 @@
         "server/**",
         "client/**",
         "src/**"
-      ]
+      ],
+      "antigravity": {
+        "model": "gemini-3.8-flash",
+        "role_title": "Fullstack QA, UI/UX & Security Gatekeeper",
+        "enabled_tools": [
+          "view_file",
+          "create_file",
+          "edit_file",
+          "run_command",
+          "search_dir"
+        ],
+        "compaction_threshold": 35000,
+        "specialized_skills": [
+          "verification-before-completion",
+          "systematic-debugging",
+          "diagnosing-bugs",
+          "test-driven-development",
+          "webapp-testing",
+          "browser-testing-with-devtools",
+          "security-and-hardening",
+          "cybersecurity-and-penetration-testing"
+        ],
+        "budget": {
+          "max_model_calls": 10,
+          "max_tool_calls": 25,
+          "max_input_tokens": 120000,
+          "max_output_tokens": 20000,
+          "max_total_tokens": 140000
+        }
+      }
     },
     "data-researcher": {
       "writable_paths": [
@@ -90,7 +205,32 @@
         "client/**",
         "tests/**",
         "src/**"
-      ]
+      ],
+      "antigravity": {
+        "model": "gemini-3.8-flash",
+        "role_title": "Deep Knowledge & Documentation Researcher",
+        "enabled_tools": [
+          "view_file",
+          "create_file",
+          "search_dir",
+          "list_dir"
+        ],
+        "compaction_threshold": 35000,
+        "specialized_skills": [
+          "deep-research",
+          "brainstorming",
+          "doc-coauthoring",
+          "source-driven-development",
+          "context-mode"
+        ],
+        "budget": {
+          "max_model_calls": 10,
+          "max_tool_calls": 20,
+          "max_input_tokens": 120000,
+          "max_output_tokens": 20000,
+          "max_total_tokens": 140000
+        }
+      }
     },
     "trainer-continuous-learning": {
       "writable_paths": [
@@ -104,7 +244,31 @@
         "client/**",
         "src/**",
         "tests/**"
-      ]
+      ],
+      "antigravity": {
+        "model": "gemini-2.5-pro",
+        "role_title": "Continuous Learning, RCA & Coaching Specialist",
+        "enabled_tools": [
+          "view_file",
+          "create_file",
+          "search_dir"
+        ],
+        "compaction_threshold": 65000,
+        "specialized_skills": [
+          "systematic-debugging",
+          "diagnosing-bugs",
+          "doubt-driven-development",
+          "writing-skills",
+          "skill-creator"
+        ],
+        "budget": {
+          "max_model_calls": 8,
+          "max_tool_calls": 20,
+          "max_input_tokens": 100000,
+          "max_output_tokens": 20000,
+          "max_total_tokens": 120000
+        }
+      }
     }
   }
 }

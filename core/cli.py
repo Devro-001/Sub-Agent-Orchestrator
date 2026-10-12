@@ -3,8 +3,13 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Optional
 
+# Ensure project root is in sys.path when invoked directly
+_project_root = Path(__file__).resolve().parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
+
+from typing import List, Optional
 from contracts.types import AgentRole, TaskStatus
 from core.orchestrator import Orchestrator
 
@@ -80,6 +85,12 @@ def build_parser() -> argparse.ArgumentParser:
     auto_parser.add_argument("task_id", help="Task ID")
     auto_parser.add_argument("--retries", type=int, default=3, help="Max retry attempts before escalation")
 
+    # Antigravity Manifest
+    ag_parser = subparsers.add_parser(
+        "antigravity-manifest", help="Export Antigravity SDK & IDE subagent configuration manifest"
+    )
+    ag_parser.add_argument("--json", action="store_true", help="Print as raw JSON")
+
     return parser
 
 
@@ -149,6 +160,26 @@ def main(argv: Optional[List[str]] = None) -> int:
         else:
             print(f"⚠️ {msg}")
             return 1
+
+    elif args.command == "antigravity-manifest":
+        import json
+        from core.antigravity_bridge import AntigravityBridge
+
+        bridge = AntigravityBridge()
+        manifest = bridge.export_ide_manifest()
+        if args.json:
+            print(json.dumps(manifest, indent=2))
+        else:
+            print("🚀 Antigravity Multi-Agent & Skill Clustering Manifest")
+            print(f"Skills Root: {manifest['skills_root']}")
+            print("-" * 65)
+            for role_name, config in manifest["subagents"].items():
+                print(f"[{role_name}] - {config['role_title']}")
+                print(f"  Model: {config['model']} | Compaction: {config['compaction_threshold']} tokens")
+                print(f"  Skills ({len(config['specialized_skills'])}): {', '.join(config['specialized_skills'])}")
+                print(f"  Tools: {', '.join(config['enabled_tools'])}")
+                print()
+        return 0
 
     return 0
 
