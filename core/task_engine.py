@@ -108,6 +108,23 @@ class TaskEngine:
                 (project.id, project.name, project.root_path, project.description),
             )
 
+    def get_project(self, project_id: str) -> Optional[ProjectMeta]:
+        """Retrieves project metadata by ID if already registered."""
+        with self._get_connection() as conn:
+            row = conn.execute(
+                "SELECT id, name, root_path, description FROM projects WHERE id = ?",
+                (project_id,),
+            ).fetchone()
+            if not row:
+                return None
+            return ProjectMeta(
+                id=row["id"],
+                name=row["name"],
+                root_path=row["root_path"],
+                description=row["description"] or "",
+            )
+
+
     def add_task(self, task: Task) -> None:
         with self._get_connection() as conn:
             conn.execute(

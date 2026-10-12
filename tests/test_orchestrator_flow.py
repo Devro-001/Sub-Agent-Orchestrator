@@ -192,6 +192,20 @@ class TestOrchestratorFlow(unittest.TestCase):
         self.assertIn("T-AUTO-01", kb_text)
         self.assertIn("QA Rejected on attempt 1", kb_text)
 
+    def test_auto_initialization_on_instantiation(self):
+        """Tests that a fresh uninitialized project directory is automatically initialized on instantiation."""
+        uninit_dir = Path(self.temp_dir.name) / "brand_new_project"
+        uninit_dir.mkdir(parents=True)
+
+        # Instantiating Orchestrator should auto-bootstrap the project
+        orch = Orchestrator(str(uninit_dir), str(self.sb_path))
+        proj = orch.task_engine.get_project("brand-new-project")
+        self.assertIsNotNone(proj)
+        self.assertEqual(proj.name, "brand_new_project")
+        self.assertTrue((uninit_dir / "contracts").exists())
+        self.assertTrue((uninit_dir / ".specify" / "memory" / "task_ledger.db").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -32,6 +32,26 @@ class Orchestrator:
         )
         self.contracts_dir = self.project_root / "contracts"
         self.contracts_dir.mkdir(parents=True, exist_ok=True)
+        self._ensure_auto_initialized()
+
+    def _ensure_auto_initialized(self) -> None:
+        """Automatically registers the current project in TaskEngine if not already registered."""
+        proj_name = self.project_root.name
+        proj_id = "".join(c if c.isalnum() else "-" for c in proj_name).lower().strip("-")
+        while "--" in proj_id:
+            proj_id = proj_id.replace("--", "-")
+        if not proj_id:
+            proj_id = "default-project"
+
+
+        existing = self.task_engine.get_project(proj_id)
+        if not existing:
+            self.init_project(
+                project_id=proj_id,
+                name=proj_name,
+                description=f"Auto-initialized orchestrator workspace for {proj_name}",
+            )
+
 
     def init_project(self, project_id: str, name: str, description: str = "") -> ProjectMeta:
         project = ProjectMeta(
